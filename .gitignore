@@ -1,0 +1,14 @@
+# Eclipse
+.classpath
+.settings/
+.project
+bin/
+
+# Gradle
+build/
+.gradle/
+
+# Runtime
+config.json
+store.json
+attachments/

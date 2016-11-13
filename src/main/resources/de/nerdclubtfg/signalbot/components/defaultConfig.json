@@ -1,0 +1,9 @@
+{
+  "plugins": {
+    "echo": true,
+    "fefe" : true,
+    "plugins" : true
+  },
+  "sudoers": [
+  ]
+}

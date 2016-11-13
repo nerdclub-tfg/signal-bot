@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.github.turakar:signal4j:1.0.3'
+}
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'signal-bot',
+        	'Implementation-Version': '0.0.1',
+        	'Main-Class': 'de.nerdclubtfg.signalbot.SignalBot'
+    }
+    baseName = project.name + '-all'
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+

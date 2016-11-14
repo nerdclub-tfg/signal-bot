@@ -5,7 +5,11 @@ import java.util.Arrays;
 
 import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
 
-import de.nerdclubtfg.signalbot.plugins.*;
+import de.nerdclubtfg.signalbot.plugins.Echo;
+import de.nerdclubtfg.signalbot.plugins.Fefe;
+import de.nerdclubtfg.signalbot.plugins.Plugins;
+import de.nerdclubtfg.signalbot.plugins.Tex;
+import de.nerdclubtfg.signalbot.plugins.Xkcd;
 import de.thoffbauer.signal4j.store.Group;
 import de.thoffbauer.signal4j.store.User;
 
@@ -15,6 +19,7 @@ public abstract class Plugin {
 		new Echo(),
 		new Fefe(),
 		new Plugins(),
+		new Tex(),
 		new Xkcd()
 	};
 	

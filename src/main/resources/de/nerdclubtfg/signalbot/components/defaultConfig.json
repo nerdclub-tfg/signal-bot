@@ -3,6 +3,7 @@
     "echo": true,
     "fefe" : true,
     "plugins" : true,
+    "tex" : true,
     "xkcd" : true
   },
   "sudoers": [

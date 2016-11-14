@@ -15,6 +15,7 @@ public abstract class Plugin {
 		new Echo(),
 		new Fefe(),
 		new Plugins(),
+		new Tex(),
 		new Xkcd()
 	};
 	

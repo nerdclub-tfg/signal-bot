@@ -32,6 +32,9 @@ public class SignalBot implements ConversationListener {
 		
 		Signal signal = Signal.getInstance();
 		signal.addConversationListener(this);
+		
+		System.out.println("Running");
+		
 		while(true) {
 			try {
 				signal.pull(60 * 1000);

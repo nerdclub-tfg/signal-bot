@@ -1,6 +1,7 @@
 package de.nerdclubtfg.signalbot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
@@ -31,6 +32,9 @@ public class SignalBot implements ConversationListener {
 		
 		Signal signal = Signal.getInstance();
 		signal.addConversationListener(this);
+		
+		System.out.println("Running");
+		
 		while(true) {
 			try {
 				signal.pull(60 * 1000);
@@ -42,10 +46,12 @@ public class SignalBot implements ConversationListener {
 
 	@Override
 	public void onMessage(User sender, SignalServiceDataMessage message, Group group) {
+		ArrayList<String> executed = new ArrayList<>();
 		for(Plugin plugin : Plugin.PLUGINS) {
 			try {
 				if(plugin.isEnabled() && plugin.accepts(sender, group, message)) {
 					plugin.onMessage(sender, group, message);
+					executed.add(plugin.getName());
 				}
 			} catch(Exception e) {
 				try {
@@ -56,6 +62,10 @@ public class SignalBot implements ConversationListener {
 				}
 				e.printStackTrace();
 			}
+		}
+		if(executed.size() > 0) {
+			System.out.println(sender.getNumber() + ": " + message.getBody().or("no body").replace("\n", "\\n")
+					+ " forwarded to " + String.join(", ", executed));
 		}
 	}
 

@@ -37,15 +37,17 @@ public class Xkcd extends PrefixedPlugin {
 	public void onMessage(User sender, Group group, SignalServiceDataMessage message) throws IOException {
 		try {
 			String body = stripPrefix(message.getBody().get());
-			if(!body.isEmpty()) {
+			if(body.matches("\\d+")) {
 				sendXkcd(sender, group, body);
-			} else {
+			} else if(body.isEmpty()) {
 				// Get newest id
 				Map<String, Object> info = getData("info.0.json");
 				int id = Integer.valueOf(info.get("num").toString());
 				// choose a random id
 				id = random.nextInt(id);
 				sendXkcd(sender, group, String.valueOf(id));
+			} else {
+				Signal.getInstance().sendMessage(sender, group, "Usage: !xkcd [id]");
 			}
 		} catch(IOException e) {
 			e.printStackTrace();

@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import java.util.Random;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -25,6 +26,8 @@ import de.thoffbauer.signal4j.store.User;
 public class Xkcd extends PrefixedPlugin {
 	
 	private static final String URL = "https://xkcd.com/";
+	
+	private Random random = new Random();
 
 	public Xkcd() {
 		super("!xkcd");
@@ -37,9 +40,12 @@ public class Xkcd extends PrefixedPlugin {
 			if(!body.isEmpty()) {
 				sendXkcd(sender, group, body);
 			} else {
+				// Get newest id
 				Map<String, Object> info = getData("info.0.json");
-				String id = info.get("num").toString();
-				sendXkcd(sender, group, id);
+				int id = Integer.valueOf(info.get("num").toString());
+				// choose a random id
+				id = random.nextInt(id);
+				sendXkcd(sender, group, String.valueOf(id));
 			}
 		} catch(IOException e) {
 			e.printStackTrace();

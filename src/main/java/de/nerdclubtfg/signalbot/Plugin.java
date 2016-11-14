@@ -14,7 +14,8 @@ public abstract class Plugin {
 	public static final Plugin[] PLUGINS = new Plugin[] {
 		new Echo(),
 		new Fefe(),
-		new Plugins()
+		new Plugins(),
+		new Xkcd()
 	};
 	
 	public static Plugin getPlugin(String name) {

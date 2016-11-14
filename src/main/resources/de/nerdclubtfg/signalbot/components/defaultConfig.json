@@ -2,7 +2,8 @@
   "plugins": {
     "echo": true,
     "fefe" : true,
-    "plugins" : true
+    "plugins" : true,
+    "xkcd" : true
   },
   "sudoers": [
   ]

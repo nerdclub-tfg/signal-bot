@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.turakar:signal4j:1.0.3'
+    compile 'com.github.turakar:signal4j:1.0.4'
 }
 
 task fatJar(type: Jar) {

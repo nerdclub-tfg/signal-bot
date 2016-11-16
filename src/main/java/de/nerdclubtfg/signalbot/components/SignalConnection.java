@@ -1,6 +1,8 @@
 package de.nerdclubtfg.signalbot.components;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Timer;
@@ -10,10 +12,13 @@ import java.util.concurrent.TimeoutException;
 import org.whispersystems.signalservice.api.messages.SignalServiceDataMessage;
 
 import de.thoffbauer.signal4j.SignalService;
+import de.thoffbauer.signal4j.exceptions.NoGroupFoundException;
 import de.thoffbauer.signal4j.listener.ConversationListener;
-import de.thoffbauer.signal4j.store.DataStore;
+import de.thoffbauer.signal4j.listener.SecurityExceptionListener;
+import de.thoffbauer.signal4j.store.Group;
+import de.thoffbauer.signal4j.store.User;
 
-public class SignalConnection extends Signal {
+public class SignalConnection extends Signal implements SecurityExceptionListener {
 
 	private static final String USER_AGENT = "signal-bot";
 	
@@ -59,18 +64,19 @@ public class SignalConnection extends Signal {
 				scanner.close();
 				System.out.println("Registered!");
 			}
-			preKeysTimer = new Timer(true);
-			preKeysTimer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					try {
-						signalService.checkPreKeys(80);
-					} catch (IOException e) {
-						System.err.println("Could not update prekeys! " + e.getMessage());
-					}
-				}
-			}, 0, 30 * 1000);
 		}
+		preKeysTimer = new Timer(true);
+		preKeysTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					signalService.checkPreKeys(80);
+				} catch (IOException e) {
+					System.err.println("Could not update prekeys! " + e.getMessage());
+				}
+			}
+		}, 0, 30 * 1000);
+		signalService.addSecurityExceptionListener(this);
 	}
 
 	public void sendMessage(String address, SignalServiceDataMessage message) throws IOException {
@@ -87,6 +93,31 @@ public class SignalConnection extends Signal {
 
 	public void pull(int timeoutMillis) throws IOException {
 		signalService.pull(timeoutMillis);
+	}
+
+	@Override
+	public void onSecurityException(User user, Exception e) {
+		System.err.println("Security Exception: " + e.getMessage() + " (" + e.getClass().getSimpleName() + ")");
+		if(e instanceof NoGroupFoundException) {
+			System.err.println(
+					"This error most probably occurs if this number was added to a group in a different registration. "
+					+ "This can be fixed by leaving and re-entering the group.\n"
+					+ "Therefore please enter the members of the group you just sent a message in manually (space seperated). "
+					+ "If you do not know the members, please enter an empty line. The message will be considered a private message then:");
+			@SuppressWarnings("resource") Scanner scanner = new Scanner(System.in);
+			String[] members = scanner.nextLine().split(" ");
+			if(members.length == 0) {
+				System.err.println("Aborting");
+				return;
+			}
+			Group group = new Group(((NoGroupFoundException) e).getId());
+			group.setMembers(new ArrayList<>(Arrays.asList(members)));
+			try {
+				signalService.leaveGroup(group);
+			} catch (IOException e1) {
+				System.err.println("Could not leave group! " + e1.getMessage() + " (" + e1.getClass().getSimpleName() + ")");
+			}
+		}
 	}
 	
 	

@@ -1,6 +1,5 @@
 package de.nerdclubtfg.signalbot.components;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +55,7 @@ public class SignalConsole extends Signal {
 					.filter(p -> p != null)
 					.forEach(p -> {
 						System.out.println("Saved an attachment to " + p.toString());
-					});;
+					});
 		}
 		System.out.println(out);
 	}
